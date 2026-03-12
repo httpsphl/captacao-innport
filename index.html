@@ -1,0 +1,883 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Captação de Contatos – SBC 2025</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #eef2f7;
+    --surface: #ffffff;
+    --card: #f8fafc;
+    --border: #dde3ed;
+    --border-light: #c8d3e0;
+    --teal: #009d84;
+    --teal-dim: rgba(0,157,132,0.10);
+    --teal-glow: rgba(0,157,132,0.22);
+    --blue: #3b82f6;
+    --gold: #d97706;
+    --text: #1e293b;
+    --text-muted: #64748b;
+    --text-soft: #475569;
+    --red: #ef4444;
+    --green: #059669;
+    --radius: 12px;
+    --radius-sm: 8px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
+  body {
+    background: var(--bg);
+    font-family: 'DM Sans', sans-serif;
+    color: var(--text);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* BACKGROUND GRID */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(0,157,132,0.06) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,157,132,0.06) 1px, transparent 1px);
+    background-size: 40px 40px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .app {
+    position: relative;
+    z-index: 1;
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 0 0 40px;
+  }
+
+  /* HEADER */
+  .header {
+    background: linear-gradient(135deg, #1a3a5c 0%, #1e4976 50%, #122d4a 100%);
+    border-bottom: 1px solid var(--border-light);
+    padding: 28px 32px 24px;
+    position: relative;
+    overflow: hidden;
+  }
+  .header::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--teal), transparent);
+  }
+
+  .header-top {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+
+  .header-title h1 {
+    font-family: 'Syne', sans-serif;
+    font-size: 22px;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+    color: #fff;
+    line-height: 1.2;
+  }
+  .header-title h1 span { color: var(--teal); }
+
+  .header-subtitle {
+    margin-top: 6px;
+    font-size: 12px;
+    color: rgba(255,255,255,0.55);
+    letter-spacing: 0.5px;
+    line-height: 1.5;
+  }
+  .header-subtitle strong { color: rgba(255,255,255,0.8); }
+
+  .brands {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+  .brand-pill {
+    padding: 5px 14px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+  }
+  .brand-pill.innport  { background: #00c9a7; color: #003d32; border: none; }
+  .brand-pill.realists { background: #ef4444; color: #fff; border: none; }
+  .brand-pill.surgical { background: #db2777; color: #fff; border: none; }
+
+  /* COUNTER */
+  .counter-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 32px;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+  }
+  .counter-info {
+    font-size: 13px;
+    color: var(--text-muted);
+  }
+  .counter-info strong { color: var(--teal); font-size: 16px; font-weight: 700; }
+
+  .btn-export {
+    display: flex; align-items: center; gap: 7px;
+    background: none;
+    border: 1px solid var(--border-light);
+    color: var(--text-soft);
+    padding: 7px 14px;
+    border-radius: var(--radius-sm);
+    font-size: 12px;
+    font-family: 'DM Sans', sans-serif;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .btn-export:hover { border-color: var(--teal); color: var(--teal); }
+
+  /* FORM AREA */
+  .form-wrapper {
+    padding: 24px 24px 0;
+  }
+
+  /* SECTION */
+  .section {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 20px 22px;
+    margin-bottom: 16px;
+  }
+  .section-label {
+    font-family: 'Syne', sans-serif;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--teal);
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .section-label::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  /* TIPO DE CONTATO */
+  .tipo-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+  .tipo-btn {
+    padding: 14px 12px;
+    border-radius: var(--radius-sm);
+    border: 2px solid var(--border);
+    background: var(--surface);
+    color: var(--text-soft);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex; align-items: center; gap: 10px;
+    text-align: left;
+  }
+  .tipo-btn .dot {
+    width: 16px; height: 16px;
+    border-radius: 50%;
+    border: 2px solid var(--border-light);
+    flex-shrink: 0;
+    transition: all 0.2s;
+  }
+  .tipo-btn.active {
+    border-color: var(--teal);
+    background: var(--teal-dim);
+    color: var(--text);
+  }
+  .tipo-btn.active .dot {
+    border-color: var(--teal);
+    background: var(--teal);
+    box-shadow: 0 0 8px var(--teal-glow);
+  }
+
+  /* FIELDS */
+  .fields-grid {
+    display: grid;
+    gap: 14px;
+  }
+  .fields-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .field { display: flex; flex-direction: column; gap: 6px; }
+  .field label {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    color: var(--text-muted);
+    text-transform: uppercase;
+  }
+  .field input, .field select {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 12px 14px;
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    width: 100%;
+    -webkit-appearance: none;
+  }
+  .field input:focus, .field select:focus {
+    border-color: var(--teal);
+    box-shadow: 0 0 0 3px var(--teal-dim);
+  }
+  .field select { cursor: pointer; }
+  .field input::placeholder { color: var(--text-muted); }
+
+  /* PRODUTOS */
+  .produtos-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+  .produto-btn {
+    padding: 16px 10px;
+    border-radius: var(--radius-sm);
+    border: 2px solid transparent;
+    background: var(--surface);
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex; flex-direction: column; align-items: center; gap: 8px;
+    text-align: center;
+  }
+  /* Default state: colored border + colored label */
+  .produto-btn.innport  { border-color: rgba(0,157,132,0.4);  background: rgba(0,157,132,0.05); }
+  .produto-btn.realists { border-color: rgba(220,38,38,0.35); background: rgba(220,38,38,0.04); }
+  .produto-btn.surgical { border-color: rgba(219,39,119,0.35);background: rgba(219,39,119,0.04);}
+
+  .produto-btn .check-icon {
+    width: 22px; height: 22px;
+    border-radius: 5px;
+    border: 2px solid currentColor;
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.2s;
+    font-size: 12px;
+    color: transparent; /* hide checkmark until active */
+  }
+  .produto-btn.innport  .check-icon { border-color: var(--teal); }
+  .produto-btn.realists .check-icon { border-color: #dc2626; }
+  .produto-btn.surgical .check-icon { border-color: #db2777; }
+
+  .produto-btn .prod-label { font-size: 13px; font-weight: 600; transition: color 0.2s; }
+  .produto-btn.innport  .prod-label { color: #007a66; }
+  .produto-btn.realists .prod-label { color: #dc2626; }
+  .produto-btn.surgical .prod-label { color: #b91c74; }
+
+  /* Active state: filled solid color, white text */
+  .produto-btn.innport.active  { background: var(--teal); border-color: var(--teal); box-shadow: 0 4px 14px rgba(0,201,167,0.35); }
+  .produto-btn.realists.active { background: #dc2626;     border-color: #dc2626;     box-shadow: 0 4px 14px rgba(220,38,38,0.35); }
+  .produto-btn.surgical.active { background: #db2777;     border-color: #db2777;     box-shadow: 0 4px 14px rgba(219,39,119,0.35); }
+
+  .produto-btn.active .check-icon { background: rgba(255,255,255,0.25); border-color: rgba(255,255,255,0.6); color: #fff; }
+  .produto-btn.active .prod-label { color: #fff; }
+
+  /* INTERESSE */
+  .interesse-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; }
+  .interesse-btn {
+    padding: 11px 14px;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--border);
+    background: var(--surface);
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex; align-items: center; gap: 10px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    color: var(--text-soft);
+  }
+  .interesse-btn .check-sq {
+    width: 16px; height: 16px; flex-shrink: 0;
+    border-radius: 4px;
+    border: 2px solid var(--border-light);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 10px;
+    transition: all 0.2s;
+  }
+  .interesse-btn.active {
+    border-color: var(--teal);
+    background: var(--teal-dim);
+    color: var(--text);
+  }
+  .interesse-btn.active .check-sq { background: var(--teal); border-color: var(--teal); color: #000; }
+
+  /* QUALIFICAÇÃO */
+  .qual-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+  .qual-btn {
+    padding: 14px 8px;
+    border-radius: var(--radius-sm);
+    border: 2px solid var(--border);
+    background: var(--surface);
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex; flex-direction: column; align-items: center; gap: 6px;
+  }
+  .qual-btn .stars { font-size: 16px; letter-spacing: 1px; }
+  .qual-btn .qlabel { font-size: 12px; font-weight: 500; color: var(--text-muted); transition: color 0.2s; }
+  .qual-btn.active.alto   { border-color: var(--gold); background: rgba(245,158,11,0.12); }
+  .qual-btn.active.medio  { border-color: var(--blue); background: rgba(59,130,246,0.12); }
+  .qual-btn.active.network{ border-color: #a78bfa; background: rgba(167,139,250,0.12); }
+  .qual-btn.active.alto .qlabel   { color: var(--gold); }
+  .qual-btn.active.medio .qlabel  { color: #60a5fa; }
+  .qual-btn.active.network .qlabel{ color: #a78bfa; }
+
+  /* OBSERVAÇÃO */
+  .field textarea {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 12px 14px;
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    outline: none;
+    resize: none;
+    width: 100%;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+  .field textarea:focus { border-color: var(--teal); box-shadow: 0 0 0 3px var(--teal-dim); }
+  .field textarea::placeholder { color: var(--text-muted); }
+
+  /* AUTORIZAÇÃO */
+  .autorizacao {
+    display: flex; align-items: flex-start; gap: 14px;
+    cursor: pointer;
+    padding: 16px;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--border);
+    background: var(--surface);
+    transition: all 0.2s;
+  }
+  .autorizacao.active { border-color: var(--green); background: rgba(16,185,129,0.08); }
+  .check-lg {
+    width: 22px; height: 22px; flex-shrink: 0;
+    border-radius: 6px;
+    border: 2px solid var(--border-light);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 13px;
+    transition: all 0.2s;
+    margin-top: 1px;
+  }
+  .autorizacao.active .check-lg { background: var(--green); border-color: var(--green); color: #fff; }
+  .autorizacao p {
+    font-size: 13px;
+    line-height: 1.5;
+    color: var(--text-soft);
+  }
+  .autorizacao.active p { color: var(--text); }
+
+  /* BOTÕES */
+  .actions {
+    padding: 20px 24px 32px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+  }
+  .btn-save {
+    padding: 18px;
+    border-radius: var(--radius);
+    border: none;
+    background: linear-gradient(135deg, var(--teal) 0%, #00a88a 100%);
+    color: #001a14;
+    font-family: 'Syne', sans-serif;
+    font-size: 16px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex; align-items: center; justify-content: center; gap: 10px;
+    box-shadow: 0 4px 20px rgba(0,201,167,0.3);
+  }
+  .btn-save:hover { transform: translateY(-1px); box-shadow: 0 6px 28px rgba(0,201,167,0.4); }
+  .btn-save:active { transform: translateY(0); }
+
+  .btn-new {
+    padding: 18px;
+    border-radius: var(--radius);
+    border: 2px solid var(--border-light);
+    background: var(--surface);
+    color: var(--text-soft);
+    font-family: 'Syne', sans-serif;
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex; align-items: center; justify-content: center; gap: 10px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  }
+  .btn-new:hover { border-color: var(--text-soft); color: var(--text); background: #f1f5f9; }
+
+  /* TOAST */
+  .toast {
+    position: fixed;
+    bottom: 32px; left: 50%;
+    transform: translateX(-50%) translateY(80px);
+    background: var(--green);
+    color: #fff;
+    padding: 14px 24px;
+    border-radius: 40px;
+    font-size: 14px;
+    font-weight: 600;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+    z-index: 999;
+    transition: transform 0.35s cubic-bezier(0.34,1.56,0.64,1);
+    white-space: nowrap;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .toast.show { transform: translateX(-50%) translateY(0); }
+  .toast.error { background: var(--red); }
+
+  /* REQUIRED ASTERISK */
+  .req { color: var(--red); margin-left: 2px; }
+
+  /* VALIDATION */
+  .field input.invalid, .field select.invalid { border-color: var(--red) !important; }
+
+  /* MODAL DE CONTATOS */
+  .modal-overlay {
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,0.7);
+    backdrop-filter: blur(4px);
+    z-index: 100;
+    display: none;
+    align-items: center; justify-content: center;
+    padding: 20px;
+  }
+  .modal-overlay.open { display: flex; }
+  .modal {
+    background: var(--card);
+    border: 1px solid var(--border-light);
+    border-radius: 16px;
+    width: 100%; max-width: 680px;
+    max-height: 80vh;
+    overflow: hidden;
+    display: flex; flex-direction: column;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.15);
+  }
+  .modal-header {
+    padding: 20px 24px;
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .modal-header h2 { font-family: 'Syne', sans-serif; font-size: 18px; font-weight: 700; }
+  .modal-close {
+    background: none; border: none; color: var(--text-muted);
+    font-size: 22px; cursor: pointer; padding: 4px;
+  }
+  .modal-body { overflow-y: auto; flex: 1; padding: 16px 24px; }
+  .contact-item {
+    padding: 14px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    margin-bottom: 10px;
+    background: var(--surface);
+  }
+  .contact-item-name { font-weight: 600; font-size: 15px; }
+  .contact-item-meta { font-size: 12px; color: var(--text-muted); margin-top: 4px; }
+
+  @media (max-width: 600px) {
+    .fields-row { grid-template-columns: 1fr; }
+    .interesse-grid { grid-template-columns: 1fr; }
+    .header { padding: 20px 16px 18px; }
+    .form-wrapper { padding: 16px 16px 0; }
+    .actions { padding: 16px; }
+    .counter-bar { padding: 10px 16px; }
+  }
+</style>
+</head>
+<body>
+<div class="app">
+
+  <!-- HEADER -->
+  <div class="header">
+    <div class="header-top">
+      <div class="header-title">
+        <h1>CAPTAÇÃO DE <span>CONTATOS</span></h1>
+        <div class="header-subtitle">
+          <strong>SBC – Congresso Brasileiro de Coluna</strong> · Curitiba
+        </div>
+      </div>
+      <div class="brands">
+        <span class="brand-pill innport">Innport</span>
+        <span class="brand-pill realists">Realists</span>
+        <span class="brand-pill surgical">Surgical Science</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- COUNTER BAR -->
+  <div class="counter-bar">
+    <div class="counter-info">
+      <strong id="counter">0</strong> contatos salvos hoje
+    </div>
+    <div style="display:flex;gap:10px;align-items:center">
+      <button class="btn-export" onclick="openModal()">
+        <span>👥</span> Ver contatos
+      </button>
+      <button class="btn-export" onclick="exportCSV()">
+        <span>⬇</span> Exportar CSV
+      </button>
+    </div>
+  </div>
+
+  <!-- FORM -->
+  <div class="form-wrapper">
+
+    <!-- TIPO DE CONTATO -->
+    <div class="section">
+      <div class="section-label">Tipo de Contato</div>
+      <div class="tipo-grid">
+        <button class="tipo-btn active" id="tipo-medico" onclick="setTipo('medico')">
+          <span class="dot"></span> Médico
+        </button>
+        <button class="tipo-btn" id="tipo-empresa" onclick="setTipo('empresa')">
+          <span class="dot"></span> Empresa / Distribuidor
+        </button>
+      </div>
+    </div>
+
+    <!-- DADOS PRINCIPAIS -->
+    <div class="section">
+      <div class="section-label">Dados Principais</div>
+      <div class="fields-grid">
+        <div class="field">
+          <label>Nome / Empresa <span class="req">*</span></label>
+          <input type="text" id="nome" placeholder="Nome / Empresa" autocomplete="off" autocorrect="off">
+        </div>
+        <div class="field">
+          <label>Especialidade / Cargo</label>
+          <input type="text" id="cargo" placeholder="Ex: Ortopedista, Diretor Comercial" autocomplete="off" autocorrect="off">
+        </div>
+        <div class="fields-row">
+          <div class="field">
+            <label>País</label>
+            <input type="text" id="pais" placeholder="Ex: Brasil, Argentina..." autocomplete="off" autocorrect="off">
+          </div>
+          <div class="field">
+            <label>Estado</label>
+            <input type="text" id="estado" placeholder="Ex: SP, PR, Buenos Aires..." autocomplete="off" autocorrect="off">
+          </div>
+        </div>
+        <div class="field">
+          <label>Telefone / WhatsApp <span class="req">*</span></label>
+          <input type="tel" id="telefone" placeholder="(41) 99999-9999" autocomplete="off" inputmode="tel">
+        </div>
+      </div>
+    </div>
+
+    <!-- PRODUTO DE INTERESSE -->
+    <div class="section">
+      <div class="section-label">Produto de Interesse</div>
+      <div class="produtos-grid">
+        <button class="produto-btn innport" id="prod-innport" onclick="toggleProduto('innport')">
+          <span class="check-icon">✓</span>
+          <span class="prod-label">Innport</span>
+        </button>
+        <button class="produto-btn realists" id="prod-realists" onclick="toggleProduto('realists')">
+          <span class="check-icon">✓</span>
+          <span class="prod-label">Realists</span>
+        </button>
+        <button class="produto-btn surgical" id="prod-surgical" onclick="toggleProduto('surgical')">
+          <span class="check-icon">✓</span>
+          <span class="prod-label">Surgical Science</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- INTERESSE -->
+    <div class="section">
+      <div class="section-label">Interesse</div>
+      <div class="interesse-grid">
+        <button class="interesse-btn" id="int-demo" onclick="toggleInteresse('demo')">
+          <span class="check-sq">✓</span> Demonstração
+        </button>
+        <button class="interesse-btn" id="int-compra" onclick="toggleInteresse('compra')">
+          <span class="check-sq">✓</span> Compra
+        </button>
+        <button class="interesse-btn" id="int-trein" onclick="toggleInteresse('trein')">
+          <span class="check-sq">✓</span> Treinamento
+        </button>
+        <button class="interesse-btn" id="int-parceria" onclick="toggleInteresse('parceria')">
+          <span class="check-sq">✓</span> Parceria
+        </button>
+        <button class="interesse-btn" id="int-tecnico" onclick="toggleInteresse('tecnico')" style="grid-column:span 2">
+          <span class="check-sq">✓</span> Informações técnicas
+        </button>
+      </div>
+    </div>
+
+    <!-- QUALIFICAÇÃO -->
+    <div class="section">
+      <div class="section-label">Qualificação do Lead</div>
+      <div class="qual-grid">
+        <button class="qual-btn alto" id="qual-alto" onclick="setQual('alto')">
+          <span class="stars">⭐⭐⭐</span>
+          <span class="qlabel">Alto interesse</span>
+        </button>
+        <button class="qual-btn medio" id="qual-medio" onclick="setQual('medio')">
+          <span class="stars">⭐⭐</span>
+          <span class="qlabel">Médio interesse</span>
+        </button>
+        <button class="qual-btn network" id="qual-network" onclick="setQual('network')">
+          <span class="stars">🤝</span>
+          <span class="qlabel">Networking</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- OBSERVAÇÃO -->
+    <div class="section">
+      <div class="section-label">Observação Rápida</div>
+      <div class="field">
+        <textarea id="obs" rows="2" placeholder="Anotação rápida sobre o contato..."></textarea>
+      </div>
+    </div>
+
+    <!-- AUTORIZAÇÃO -->
+    <div class="section">
+      <div class="section-label">Autorização de Contato</div>
+      <div class="autorizacao" id="autorizacao" onclick="toggleAut()">
+        <div class="check-lg" id="aut-check">✓</div>
+        <p>Autorizo a Innport a entrar em contato para envio de informações e novidades sobre tecnologias médicas, treinamentos e produtos.</p>
+      </div>
+    </div>
+
+  </div><!-- /form-wrapper -->
+
+  <!-- AÇÕES -->
+  <div class="actions">
+    <button class="btn-save" onclick="salvarContato()">
+      💾 SALVAR CONTATO
+    </button>
+    <button class="btn-new" onclick="novoContato()">
+      ＋ NOVO CONTATO
+    </button>
+  </div>
+
+</div><!-- /app -->
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<!-- MODAL CONTATOS -->
+<div class="modal-overlay" id="modal" onclick="closeModalOutside(event)">
+  <div class="modal">
+    <div class="modal-header">
+      <h2>📋 Contatos Salvos</h2>
+      <button class="modal-close" onclick="closeModal()">✕</button>
+    </div>
+    <div class="modal-body" id="modal-body"></div>
+  </div>
+</div>
+
+<script>
+  // ─── STATE ───────────────────────────────────────────
+  let state = {
+    tipo: 'medico',
+    produtos: [],
+    interesses: [],
+    qualificacao: '',
+    autorizacao: true
+  };
+
+  // ─── INIT ─────────────────────────────────────────────
+  updateCounter();
+
+  // ─── TIPO ────────────────────────────────────────────
+  function setTipo(t) {
+    state.tipo = t;
+    document.getElementById('tipo-medico').classList.toggle('active', t === 'medico');
+    document.getElementById('tipo-empresa').classList.toggle('active', t === 'empresa');
+  }
+
+  // ─── PRODUTOS ────────────────────────────────────────
+  function toggleProduto(p) {
+    const idx = state.produtos.indexOf(p);
+    if (idx >= 0) state.produtos.splice(idx,1);
+    else state.produtos.push(p);
+    document.getElementById('prod-'+p).classList.toggle('active', state.produtos.includes(p));
+  }
+
+  // ─── INTERESSE ───────────────────────────────────────
+  const INTERESSE_MAP = {demo:'demo',compra:'compra',trein:'trein',parceria:'parceria',tecnico:'tecnico'};
+  function toggleInteresse(k) {
+    const idx = state.interesses.indexOf(k);
+    if (idx >= 0) state.interesses.splice(idx,1);
+    else state.interesses.push(k);
+    document.getElementById('int-'+k).classList.toggle('active', state.interesses.includes(k));
+  }
+
+  // ─── QUALIFICAÇÃO ────────────────────────────────────
+  function setQual(q) {
+    state.qualificacao = state.qualificacao === q ? '' : q;
+    ['alto','medio','network'].forEach(x => {
+      document.getElementById('qual-'+x).classList.toggle('active', state.qualificacao === x);
+    });
+  }
+
+  // ─── AUTORIZAÇÃO ─────────────────────────────────────
+  function toggleAut() {
+    state.autorizacao = !state.autorizacao;
+    document.getElementById('autorizacao').classList.toggle('active', state.autorizacao);
+  }
+  // init como ativo
+  document.getElementById('autorizacao').classList.add('active');
+
+  // ─── INTERESSE LABELS ────────────────────────────────
+  const INTERESSE_LABELS = {
+    demo:'Demonstração', compra:'Compra', trein:'Treinamento',
+    parceria:'Parceria', tecnico:'Inf. Técnicas'
+  };
+  const QUAL_LABELS = { alto:'Alto interesse', medio:'Médio interesse', network:'Networking' };
+  const PROD_LABELS = { innport:'Innport', realists:'Realists', surgical:'Surgical Science' };
+
+  // ─── SALVAR ──────────────────────────────────────────
+  function salvarContato() {
+    const nome = document.getElementById('nome').value.trim();
+    const tel  = document.getElementById('telefone').value.trim();
+
+    let valid = true;
+    ['nome','telefone'].forEach(id => {
+      const el = document.getElementById(id);
+      if (!el.value.trim()) { el.classList.add('invalid'); valid = false; }
+      else el.classList.remove('invalid');
+    });
+    if (!valid) { showToast('⚠️ Preencha Nome e Telefone', true); return; }
+
+    const contato = {
+      id: Date.now(),
+      data: new Date().toLocaleString('pt-BR'),
+      tipo: state.tipo === 'medico' ? 'Médico' : 'Empresa/Distribuidor',
+      nome,
+      cargo: document.getElementById('cargo').value.trim(),
+      pais: document.getElementById('pais').value,
+      estado: document.getElementById('estado').value,
+      telefone: tel,
+      produtos: state.produtos.map(p => PROD_LABELS[p]).join(', '),
+      interesses: state.interesses.map(i => INTERESSE_LABELS[i]).join(', '),
+      qualificacao: state.qualificacao ? QUAL_LABELS[state.qualificacao] : '',
+      obs: document.getElementById('obs').value.trim(),
+      autorizacao: state.autorizacao ? 'Sim' : 'Não'
+    };
+
+    const saved = getContatos();
+    saved.push(contato);
+    localStorage.setItem('sbc_contatos', JSON.stringify(saved));
+    updateCounter();
+    showToast('✅ Contato salvo com sucesso!');
+    setTimeout(novoContato, 1200);
+  }
+
+  // ─── NOVO CONTATO ────────────────────────────────────
+  function novoContato() {
+    document.getElementById('nome').value = '';
+    document.getElementById('cargo').value = '';
+    document.getElementById('pais').value = '';
+    document.getElementById('estado').value = '';
+    document.getElementById('telefone').value = '';
+    document.getElementById('obs').value = '';
+
+    state.tipo = 'medico';
+    state.produtos = [];
+    state.interesses = [];
+    state.qualificacao = '';
+    state.autorizacao = true;
+
+    setTipo('medico');
+    ['innport','realists','surgical'].forEach(p => document.getElementById('prod-'+p).classList.remove('active'));
+    ['demo','compra','trein','parceria','tecnico'].forEach(i => document.getElementById('int-'+i).classList.remove('active'));
+    ['alto','medio','network'].forEach(q => document.getElementById('qual-'+q).classList.remove('active'));
+    document.getElementById('autorizacao').classList.add('active');
+    ['nome','telefone'].forEach(id => document.getElementById(id).classList.remove('invalid'));
+
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  // ─── STORAGE ─────────────────────────────────────────
+  function getContatos() {
+    try { return JSON.parse(localStorage.getItem('sbc_contatos') || '[]'); } catch { return []; }
+  }
+  function updateCounter() {
+    document.getElementById('counter').textContent = getContatos().length;
+  }
+
+  // ─── MODAL ───────────────────────────────────────────
+  function openModal() {
+    const contatos = getContatos();
+    const body = document.getElementById('modal-body');
+    if (!contatos.length) {
+      body.innerHTML = '<p style="color:var(--text-muted);text-align:center;padding:32px">Nenhum contato salvo ainda.</p>';
+    } else {
+      body.innerHTML = contatos.slice().reverse().map(c => `
+        <div class="contact-item">
+          <div class="contact-item-name">${c.nome} <span style="color:var(--text-muted);font-weight:400;font-size:12px">${c.tipo}</span></div>
+          <div class="contact-item-meta">
+            ${c.cargo ? c.cargo + ' · ' : ''}${c.telefone}
+            ${c.estado ? ' · ' + c.estado : ''}${c.pais && c.pais !== 'Brasil' ? ', ' + c.pais : ''}<br>
+            ${c.produtos ? '📦 ' + c.produtos : ''}
+            ${c.qualificacao ? ' · 🏷 ' + c.qualificacao : ''}
+            ${c.obs ? '<br>💬 ' + c.obs : ''}
+            <br><span style="opacity:0.5">${c.data}</span>
+          </div>
+        </div>
+      `).join('');
+    }
+    document.getElementById('modal').classList.add('open');
+  }
+  function closeModal() { document.getElementById('modal').classList.remove('open'); }
+  function closeModalOutside(e) { if (e.target === document.getElementById('modal')) closeModal(); }
+
+  // ─── EXPORT CSV ──────────────────────────────────────
+  function exportCSV() {
+    const contatos = getContatos();
+    if (!contatos.length) { showToast('⚠️ Nenhum contato para exportar', true); return; }
+    const keys = ['data','tipo','nome','cargo','pais','estado','telefone','produtos','interesses','qualificacao','obs','autorizacao'];
+    const headers = ['Data','Tipo','Nome','Cargo/Especialidade','País','Estado','Telefone','Produtos','Interesses','Qualificação','Observação','Autorização'];
+    const rows = [headers.join(';')];
+    contatos.forEach(c => {
+      rows.push(keys.map(k => `"${(c[k]||'').toString().replace(/"/g,'""')}"`).join(';'));
+    });
+    const blob = new Blob(['\uFEFF' + rows.join('\n')], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `contatos-sbc-${new Date().toISOString().slice(0,10)}.csv`;
+    a.click();
+    URL.revokeObjectURL(url);
+    showToast('📊 CSV exportado!');
+  }
+
+  // ─── TOAST ───────────────────────────────────────────
+  function showToast(msg, error = false) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.className = 'toast' + (error ? ' error' : '');
+    void t.offsetWidth;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 2500);
+  }
+</script>
+</body>
+</html>
