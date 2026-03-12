@@ -854,19 +854,49 @@
     const contatos = getContatos();
     if (!contatos.length) { showToast('⚠️ Nenhum contato para exportar', true); return; }
     const keys = ['data','tipo','nome','cargo','pais','estado','telefone','produtos','interesses','qualificacao','obs','autorizacao'];
-    const headers = ['Data','Tipo','Nome','Cargo/Especialidade','País','Estado','Telefone','Produtos','Interesses','Qualificação','Observação','Autorização'];
+    const headers = ['Data','Tipo','Nome/Empresa','Cargo/Especialidade','País','Estado','Telefone','Produtos','Interesses','Qualificação','Observação','Autorização'];
     const rows = [headers.join(';')];
     contatos.forEach(c => {
       rows.push(keys.map(k => `"${(c[k]||'').toString().replace(/"/g,'""')}"`).join(';'));
     });
-    const blob = new Blob(['\uFEFF' + rows.join('\n')], { type: 'text/csv;charset=utf-8;' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `contatos-sbc-${new Date().toISOString().slice(0,10)}.csv`;
-    a.click();
-    URL.revokeObjectURL(url);
-    showToast('📊 CSV exportado!');
+    const csvContent = '\uFEFF' + rows.join('\n');
+
+    // Tenta método moderno (navegador desktop/mobile)
+    try {
+      const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `contatos-sbc-${new Date().toISOString().slice(0,10)}.csv`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      setTimeout(() => URL.revokeObjectURL(url), 1000);
+      showToast('📊 CSV exportado!');
+    } catch(e) {
+      // Fallback para Android WebView: abre os dados numa nova aba/janela
+      try {
+        const b64 = btoa(unescape(encodeURIComponent(csvContent)));
+        const dataUri = 'data:text/csv;charset=utf-8;base64,' + b64;
+        const a = document.createElement('a');
+        a.href = dataUri;
+        a.download = `contatos-sbc-${new Date().toISOString().slice(0,10)}.csv`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        showToast('📊 CSV exportado!');
+      } catch(e2) {
+        // Último recurso: abre os dados em nova janela para copiar/salvar
+        const w = window.open('', '_blank');
+        if (w) {
+          w.document.write('<pre>' + csvContent.replace(/</g,'&lt;') + '</pre>');
+          w.document.title = 'Contatos SBC - Copie e salve como .csv';
+          showToast('📋 Copie os dados na nova aba');
+        } else {
+          showToast('⚠️ Permita popups para exportar', true);
+        }
+      }
+    }
   }
 
   // ─── TOAST ───────────────────────────────────────────
