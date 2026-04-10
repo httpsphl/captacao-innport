@@ -753,6 +753,9 @@
   const QUAL_LABELS = { alto:'Alto interesse', medio:'Médio interesse', network:'Networking' };
   const PROD_LABELS = { innport:'Innport', realists:'Realists', surgical:'Surgical Science' };
 
+  // ─── GOOGLE SHEETS URL ───────────────────────────────
+  const SHEETS_URL = 'https://script.google.com/macros/s/AKfycbw8AVjfvCVN9b4dEXDGoX-m4PdfY5ReGU6gLyOhZIENFejMEIcoEqAQuZ2CBPngjhRXUg/exec';
+
   // ─── SALVAR ──────────────────────────────────────────
   function salvarContato() {
     const nome = document.getElementById('nome').value.trim();
@@ -782,12 +785,29 @@
       autorizacao: state.autorizacao ? 'Sim' : 'Não'
     };
 
+    // Salva localmente (backup offline)
     const saved = getContatos();
     saved.push(contato);
     localStorage.setItem('sbc_contatos', JSON.stringify(saved));
     updateCounter();
-    showToast('✅ Contato salvo com sucesso!');
-    setTimeout(novoContato, 1200);
+
+    // Envia para Google Sheets
+    showToast('⏳ Salvando contato...');
+    fetch(SHEETS_URL, {
+      method: 'POST',
+      mode: 'no-cors',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(contato)
+    })
+    .then(() => {
+      showToast('✅ Contato salvo na planilha!');
+      setTimeout(novoContato, 1400);
+    })
+    .catch(() => {
+      // Sem internet: já está no localStorage, avisa o usuário
+      showToast('📴 Sem internet — salvo localmente!');
+      setTimeout(novoContato, 1400);
+    });
   }
 
   // ─── NOVO CONTATO ────────────────────────────────────
