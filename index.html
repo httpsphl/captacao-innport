@@ -754,7 +754,7 @@
   const PROD_LABELS = { innport:'Innport', realists:'Realists', surgical:'Surgical Science' };
 
   // ─── GOOGLE SHEETS URL ───────────────────────────────
-  const SHEETS_URL = 'https://script.google.com/macros/s/AKfycbw8AVjfvCVN9b4dEXDGoX-m4PdfY5ReGU6gLyOhZIENFejMEIcoEqAQuZ2CBPngjhRXUg/exec';
+  const SHEETS_URL = 'https://script.google.com/macros/s/AKfycbyrciHhVyDDZnGpZuJn-cadq0ArClkcorGSTYIpThJPe0VMJ5wgEu0FyxQnTRd-UhYIIA/exec';
 
   // ─── SALVAR ──────────────────────────────────────────
   function salvarContato() {
@@ -791,12 +791,12 @@
     localStorage.setItem('sbc_contatos', JSON.stringify(saved));
     updateCounter();
 
-    // Envia para Google Sheets
+    // Envia para Google Sheets (text/plain evita preflight CORS)
     showToast('⏳ Salvando contato...');
     fetch(SHEETS_URL, {
       method: 'POST',
       mode: 'no-cors',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'text/plain' },
       body: JSON.stringify(contato)
     })
     .then(() => {
